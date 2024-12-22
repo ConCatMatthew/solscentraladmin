@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Admin Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+        }
+        .form-container h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            resize: none;
+        }
+        .submit-btn {
+            background-color: #5865f2;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            background-color: #4752c4;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Sol's Central Application</h1>
+        <form id="applicationForm">
+            <div class="form-group">
+                <label for="name">First Name</label>
+                <input type="text" id="name" name="name" placeholder="Your first name" required>
+            </div>
+            <div class="form-group">
+                <label for="discord-username">Discord Username</label>
+                <input type="text" id="discord-username" name="discord-username" placeholder="e.g., User#1234" required>
+            </div>
+            <div class="form-group">
+                <label for="roblox-username">Roblox Username</label>
+                <input type="text" id="roblox-username" name="roblox-username" placeholder="Your Roblox username" required>
+            </div>
+            <div class="form-group">
+                <label for="experience">Do you have prior admin experience?</label>
+                <select id="experience" name="experience" required>
+                    <option value="">Select an option</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="skills">What skills do you bring to the team?</label>
+                <textarea id="skills" name="skills" rows="4" placeholder="Describe your skills and experience" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="availability">Availability (hours per week)</label>
+                <input type="number" id="availability" name="availability" placeholder="e.g., 10-15" required>
+            </div>
+            <div class="form-group">
+                <label for="promotion">What do you want to be promoted to?</label>
+                <select id="promotion" name="promotion" required>
+                    <option value="">Select an option</option>
+                    <option value="Head-Admin">Head-Admin</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </div>
+            <button type="button" class="submit-btn" onclick="sendToWebhook()">Submit Application</button>
+        </form>
+    </div>
+    <script>
+        async function sendToWebhook() {
+            const webhookURL = "https://discord.com/api/webhooks/1320376362745331805/xdMCxBV2dI0l8qJdUsgwXHmY0meT0De0cVWcTAS0IQ-o-oLsLWtl9_2x5aq3O_Qoh42J";
+
+            const name = document.getElementById('name').value;
+            const discordUsername = document.getElementById('discord-username').value;
+            const robloxUsername = document.getElementById('roblox-username').value;
+            const experience = document.getElementById('experience').value;
+            const skills = document.getElementById('skills').value;
+            const availability = document.getElementById('availability').value;
+            const promotion = document.getElementById('promotion').value;
+
+            const embed = {
+                embeds: [
+                    {
+                        title: "New Admin Application 📋",
+                        color: 3447003,
+                        fields: [
+                            {
+                                name: "👤 Full Name",
+                                value: name,
+                                inline: true
+                            },
+                            {
+                                name: "📛 Discord Username",
+                                value: discordUsername,
+                                inline: true
+                            },
+                            {
+                                name: "🤖 Roblox Username",
+                                value: robloxUsername,
+                                inline: true
+                            },
+                            {
+                                name: "🛠 Prior Experience",
+                                value: experience === "yes" ? "Yes ✅" : "No ❌",
+                                inline: true
+                            },
+                            {
+                                name: "💡 Skills",
+                                value: skills,
+                                inline: false
+                            },
+                            {
+                                name: "⏳ Availability",
+                                value: `${availability} hours/week`,
+                                inline: true
+                            },
+                            {
+                                name: "📈 Promotion Desired",
+                                value: promotion,
+                                inline: true
+                            }
+                        ],
+                        timestamp: new Date()
+                    }
+                ]
+            };
+
+            try {
+                const response = await fetch(webhookURL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(embed)
+                });
+
+                if (response.ok) {
+                    alert("Application submitted successfully!");
+                    document.getElementById("applicationForm").reset();
+                } else {
+                    alert("Failed to submit application. Please try again.");
+                }
+            } catch (error) {
+                console.error("Error submitting application:", error);
+                alert("An error occurred. Please try again.");
+            }
+        }
+    </script>
+</body>
+</html>
